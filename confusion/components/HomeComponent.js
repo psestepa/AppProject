@@ -22,7 +22,7 @@ function RenderItem(props) {
                 featuredSubtitle={item.designation}
                 image={{ uri: baseUrl + item.image }}>
                 <Text style={{ margin: 10 }}>
-                    {item.description}
+                    {item.description}s
                 </Text>
             </Card>
             );
