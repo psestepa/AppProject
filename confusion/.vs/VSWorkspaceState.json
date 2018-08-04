@@ -2,6 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\components",
+    "\\redux",
     "\\shared"
   ],
   "SelectedNode": "\\components\\MenuComponent.js",
