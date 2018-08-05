@@ -16,5 +16,4 @@ export const dishes = (state = { isLoading: true,
         default:
             return state;
     }
-    
 };
