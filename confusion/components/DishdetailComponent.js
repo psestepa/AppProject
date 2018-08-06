@@ -3,13 +3,19 @@ import { View, Text, ScrollView, FlatList} from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { postFavorite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
-        dishes: state.dishes,
-        comments: state.comments
+      dishes: state.dishes,
+      comments: state.comments,
+      favorites: state.favorites
     }
-}
+  }
+
+const mapDispatchToProps = dispatch => ({
+    postFavorite: (dishId) => dispatch(postFavorite(dishId))
+})
 
 //renders 1 dish
 function RenderDish(props) {
@@ -19,7 +25,6 @@ function RenderDish(props) {
             <Card
                 featuredTitle={dish.name}
                 image={{ uri: baseUrl + dish.image }}>
-            >
                 <Text style={{ margin: 10 }}>
                     {dish.description}
                 </Text>
@@ -63,7 +68,7 @@ function RenderComments(props) {
 }
 
 //function renders for each dish
-class Dishdetail extends Component {
+class DishDetail extends Component {
 
     //constructor(props) {
     //    super(props);
@@ -73,10 +78,9 @@ class Dishdetail extends Component {
     //                    favorites:[]
     //                };
     //}
-                
-    markFavorite(dishId){
-                    this.setState({ favorites: this.state.favorites.concat(dishId)})
-                }
+    markFavorite(dishId) {
+        this.props.postFavorite(dishId);
+    }
     static navigationOptions = {
         title: 'Dish Details' //status bar shows title as menu
     };
@@ -87,7 +91,7 @@ class Dishdetail extends Component {
         return (
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
-                    favorite={this.state.favorites.some(el => el === dishId)}
+                    favorite={this.props.favorites.some(el => el === dishId)}
                     onPress={() => this.markFavorite(dishId)}
                 />
                 <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
@@ -97,4 +101,4 @@ class Dishdetail extends Component {
         
 }
 
-export default connect(mapStateToProps)(Dishdetail);
+export default connect(mapStateToProps, mapDispatchToProps)(DishDetail);

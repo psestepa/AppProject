@@ -3,7 +3,7 @@ import Menu from './MenuComponent';
 import Home from './HomeComponent';
 import About from './AboutComponent';
 import Contact from './ContactsComponent';
-import Dishdetail from './DishdetailComponent';
+import DishDetail from './DishDetailComponent';
 import { View, Platform, Image, StyleSheet, ScrollView, Text } from 'react-native';
 import { createStackNavigator, createDrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 import { Icon } from 'react-native-elements';
@@ -37,7 +37,7 @@ const MenuNavigator = createStackNavigator({
             />  
         })
     },
-    Dishdetail: { screen: Dishdetail }
+    DishDetail: { screen: DishDetail }
 }, {
         initialRouteName: 'Menu', 
         navigationOptions: {
