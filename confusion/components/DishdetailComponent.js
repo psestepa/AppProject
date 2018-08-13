@@ -3,21 +3,24 @@ import { View, Text, ScrollView, FlatList,Button, Modal, TextInput, StyleSheet} 
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 import { BorderlessButton } from 'react-native-gesture-handler';
+import { comments } from '../redux/comments';
 
 const mapStateToProps = state => {
     return {
       dishes: state.dishes,
       comments: state.comments,
       favorites: state.favorites,
-      writecomments: state.writecomments
+      //writecomments: state.writecomments
     }
   }
 
 const mapDispatchToProps = dispatch => ({
-    postFavorite: (dishId) => dispatch(postFavorite(dishId))
+    postFavorite: (dishId) => dispatch(postFavorite(dishId)),
+    postComment: (dishId) => dispatch(postComment(dishId))
 })
+
 
 //renders 1 dish
 function RenderDish(props) {
@@ -45,7 +48,7 @@ function RenderDish(props) {
                     name='pencil'
                     type='font-awesome'
                     color='#551A8B'
-                    onPress={() => props.onPressComment()}
+                    onPress={() => props.onPressPencil()}
                     />
                 </View>
             </Card>
@@ -86,6 +89,7 @@ function RenderComments(props) {
         );
 }
 
+
 //function renders for each dish
 class DishDetail extends Component {
 
@@ -93,9 +97,11 @@ class DishDetail extends Component {
         super(props);
 
         this.state = {
+            id: 20,
             rating: 3,
             author: '',
-            comment:'',
+            comment: '',
+            date:'2013-12-02T17:57:28.556094Z',
             showModal: false
         }
     }
@@ -104,9 +110,14 @@ class DishDetail extends Component {
        this.setState({ showModal: !this.state.showModal });
     }
 
-    handleComment() {
+    writeComment() {
         console.log(JSON.stringify(this.state));
         this.toggleModal();
+    }
+
+    handleComment(dishId) {
+        console.log(dishId);
+        this.props.postComment(dishId,rating,author,comment);
     }
 
     markFavorite(dishId) {
@@ -124,7 +135,7 @@ class DishDetail extends Component {
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
                     favorite={this.props.favorites.some(el => el === dishId)}
                     onPressHeart={() => this.markFavorite(dishId)}
-                    onPressComment={()=>this.handleComment()}
+                    onPressPencil={()=>this.writeComment()}
                 />
                 <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
                 <Modal animationType={"slide"} transparent={false}
@@ -138,7 +149,7 @@ class DishDetail extends Component {
                             fractions={1}
                             startingValue={3}
                             imageSize={40}
-                            //onFinishRating={this.ratingCompleted}
+                            onFinishRating={(value) => this.setState({ rating: 5 })}
                             style={{ paddingVertical: 10 }}
                         />
                         <View style={{margin: 10, marginBottom: 10}}>
@@ -154,7 +165,7 @@ class DishDetail extends Component {
                             color='#000000'
                             size={20}
                             />}
-                        //onChangeText = {this.handleEmail}
+                        onChangeText = {(text) => this.setState({ author: text })} value = {this.state.author}
                         />
                         <Input style = {styles.input}
                         underlineColorAndroid = "transparent"
@@ -168,13 +179,13 @@ class DishDetail extends Component {
                             color='#000000'
                             size={20}
                             />}
-                        //onChangeText = {this.handleEmail}
+                         onChangeText = {(text) => this.setState({ comment: text })} value = {this.state.comment}
                         />
                         </View>
 
                         <View style={{ margin: 10, marginBottom: 10 }}>
                             <Button
-                                onPress={() => { this.toggleModal() }}
+                                onPress={() => { this.toggleModal(); this.handleComment(dishId, rating, author, comment) }}
                                 color="#512DA8"
                                 title="Submit"
                             />
